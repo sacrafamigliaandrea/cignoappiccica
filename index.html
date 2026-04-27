@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Il Cigno Appiccica — Ascolta e completa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #faf6ec;
+    --cream-deep: #f3ecd8;
+    --ink: #2c2417;
+    --ink-soft: #5a4f3a;
+    --muted: #8a7a5c;
+    --line: #d8cdb0;
+    --green: #1b4d2e;
+    --green-soft: #2d6b41;
+    --gold: #c8a04a;
+    --gold-deep: #a87f2c;
+    --gold-glow: #f0d88a;
+    --success: #4a7c59;
+    --info: #3a6e8c;
+    --shadow: 0 1px 2px rgba(44,36,23,.06), 0 4px 12px rgba(44,36,23,.05);
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--cream);
+    color: var(--ink);
+    font-family: 'Atkinson Hyperlegible', system-ui, sans-serif;
+    font-size: 17px;
+    line-height: 1.65;
+  }
+
+  body {
+    background-image:
+      radial-gradient(circle at 20% 0%, rgba(200,160,74,.08) 0%, transparent 50%),
+      radial-gradient(circle at 80% 100%, rgba(27,77,46,.06) 0%, transparent 50%);
+    min-height: 100vh;
+  }
+
+  header.intro {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 48px 32px 24px;
+    text-align: center;
+  }
+
+  .eyebrow {
+    font-family: 'Lora', serif;
+    font-style: italic;
+    font-size: 14px;
+    color: var(--gold-deep);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin: 0 0 12px;
+  }
+
+  h1 {
+    font-family: 'Lora', serif;
+    font-weight: 500;
+    font-size: clamp(36px, 5vw, 54px);
+    margin: 0 0 8px;
+    color: var(--green);
+    letter-spacing: -0.5px;
+  }
+
+  h1 em {
+    color: var(--gold-deep);
+    font-weight: 500;
+  }
+
+  .subtitle {
+    font-family: 'Lora', serif;
+    font-style: italic;
+    font-size: 18px;
+    color: var(--ink-soft);
+    margin: 8px 0 24px;
+  }
+
+  .ornament {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    margin: 16px auto 0;
+    color: var(--gold);
+    opacity: .7;
+  }
+  .ornament .line { width: 60px; height: 1px; background: currentColor; }
+
+  .instructions {
+    max-width: 720px;
+    margin: 24px auto 0;
+    padding: 16px 24px;
+    background: rgba(255,255,255,.5);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    text-align: left;
+  }
+  .instructions strong { color: var(--green); font-weight: 700; }
+  .instructions .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    margin-top: 10px;
+    align-items: center;
+  }
+  .legend-item { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; }
+  .legend-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--green);
+    color: var(--cream);
+  }
+
+  /* Sticky player bar */
+  .player-bar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(250,246,236,.92);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+    margin-top: 24px;
+    padding: 14px 32px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+    justify-content: center;
+    box-shadow: var(--shadow);
+  }
+
+  .player-wrap {
+    width: 360px;
+    max-width: 100%;
+    aspect-ratio: 16/9;
+    border-radius: 6px;
+    overflow: hidden;
+    background: #000;
+    box-shadow: 0 2px 8px rgba(0,0,0,.15);
+  }
+
+  .player-wrap iframe { width: 100%; height: 100%; border: 0; display: block; }
+
+  .progress-block {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 240px;
+  }
+
+  .progress-label {
+    font-family: 'Lora', serif;
+    font-style: italic;
+    font-size: 14px;
+    color: var(--ink-soft);
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .progress-label .count {
+    font-style: normal;
+    font-family: 'Atkinson Hyperlegible', sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--green);
+  }
+  .progress-label .count .total { color: var(--muted); font-weight: 400; }
+
+  .progress-bar {
+    height: 6px;
+    background: var(--cream-deep);
+    border-radius: 3px;
+    overflow: hidden;
+    position: relative;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold) 0%, var(--green) 100%);
+    width: 0%;
+    transition: width .4s cubic-bezier(.4,0,.2,1);
+    border-radius: 3px;
+  }
+
+  /* Main text container */
+  main.story {
+    max-width: 760px;
+    margin: 32px auto 60px;
+    padding: 40px 36px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    box-shadow: var(--shadow);
+    position: relative;
+  }
+
+  main.story::before, main.story::after {
+    content: "";
+    position: absolute;
+    left: 36px; right: 36px;
+    height: 6px;
+    background: linear-gradient(90deg, transparent 0%, var(--gold) 50%, transparent 100%);
+    opacity: .35;
+  }
+  main.story::before { top: 14px; }
+  main.story::after { bottom: 14px; }
+
+  .text-flow {
+    font-size: 19px;
+    line-height: 2.0;
+    color: var(--ink);
+    text-align: justify;
+    hyphens: auto;
+  }
+
+  .seg {
+    display: inline;
+    transition: background-color .3s;
+    padding: 0 1px;
+    border-radius: 2px;
+  }
+  .seg.active {
+    background: linear-gradient(180deg, transparent 60%, var(--gold-glow) 60%);
+  }
+
+  /* Blank input + replay button */
+  .blank {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 4px;
+    margin: 0 1px;
+    vertical-align: baseline;
+    white-space: nowrap;
+  }
+
+  .blank input {
+    font-family: 'Atkinson Hyperlegible', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--green);
+    background: var(--cream);
+    border: none;
+    border-bottom: 2px dashed var(--gold-deep);
+    padding: 2px 6px;
+    width: var(--w, 110px);
+    text-align: center;
+    outline: none;
+    transition: all .25s;
+    border-radius: 3px 3px 0 0;
+  }
+
+  .blank input::placeholder {
+    color: var(--muted);
+    font-weight: 400;
+    font-style: italic;
+    opacity: .55;
+  }
+
+  .blank input:focus {
+    background: #fff8e3;
+    border-bottom-color: var(--gold);
+    border-bottom-style: solid;
+    box-shadow: 0 2px 0 var(--gold);
+  }
+
+  .blank.correct input {
+    background: #e8f3ec;
+    color: var(--success);
+    border-bottom: 2px solid var(--success);
+    cursor: default;
+    font-weight: 700;
+  }
+
+  .blank.revealed-right input {
+    background: #e8f3ec;
+    color: var(--success);
+    border-bottom: 2px solid var(--success);
+  }
+
+  .blank.revealed-missed input {
+    background: #e6eef3;
+    color: var(--info);
+    border-bottom: 2px solid var(--info);
+    font-style: italic;
+  }
+
+  .blank-num {
+    position: relative;
+    top: -10px;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--gold-deep);
+    margin-right: 1px;
+    font-family: 'Lora', serif;
+  }
+
+  .replay-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px; height: 22px;
+    background: var(--green);
+    color: var(--cream);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all .2s;
+    padding: 0;
+    flex-shrink: 0;
+    align-self: center;
+    box-shadow: 0 1px 2px rgba(27,77,46,.3);
+  }
+
+  .replay-btn:hover {
+    background: var(--green-soft);
+    transform: scale(1.1);
+    box-shadow: 0 2px 6px rgba(27,77,46,.4);
+  }
+
+  .replay-btn:active { transform: scale(0.95); }
+
+  .replay-btn svg { width: 12px; height: 12px; }
+
+  .check-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px; height: 18px;
+    color: var(--success);
+    margin-left: 2px;
+    animation: pop .35s cubic-bezier(.5,1.6,.5,1);
+    align-self: center;
+  }
+  .check-mark svg { width: 16px; height: 16px; }
+
+  @keyframes pop {
+    0% { transform: scale(0); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  /* Footer / actions */
+  .actions {
+    max-width: 760px;
+    margin: 0 auto 80px;
+    padding: 0 36px;
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  button.action {
+    font-family: 'Atkinson Hyperlegible', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    padding: 12px 24px;
+    border-radius: 4px;
+    cursor: pointer;
+    border: none;
+    transition: all .2s;
+    letter-spacing: .3px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  button.primary {
+    background: var(--green);
+    color: var(--cream);
+    box-shadow: 0 2px 6px rgba(27,77,46,.25);
+  }
+  button.primary:hover { background: var(--green-soft); transform: translateY(-1px); box-shadow: 0 4px 10px rgba(27,77,46,.3); }
+
+  button.secondary {
+    background: transparent;
+    color: var(--green);
+    border: 1.5px solid var(--green);
+  }
+  button.secondary:hover { background: var(--green); color: var(--cream); }
+
+  /* Result banner */
+  .banner {
+    max-width: 760px;
+    margin: 24px auto 0;
+    padding: 20px 28px;
+    background: linear-gradient(135deg, #fff 0%, var(--cream-deep) 100%);
+    border: 2px solid var(--gold);
+    border-radius: 6px;
+    text-align: center;
+    display: none;
+    box-shadow: var(--shadow);
+  }
+  .banner.show { display: block; animation: slideIn .5s cubic-bezier(.4,0,.2,1); }
+  .banner h2 {
+    font-family: 'Lora', serif;
+    font-weight: 500;
+    font-size: 22px;
+    color: var(--green);
+    margin: 0 0 6px;
+  }
+  .banner p { margin: 0; color: var(--ink-soft); font-size: 15px; }
+  .banner .score { font-size: 32px; font-weight: 700; color: var(--gold-deep); font-family: 'Lora', serif; }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Drop cap on first letter for fairy tale feel */
+  .text-flow > .seg:first-of-type::first-letter {
+    font-family: 'Lora', serif;
+    font-size: 3.4em;
+    font-weight: 500;
+    float: left;
+    line-height: 0.85;
+    margin: 6px 8px -4px 0;
+    color: var(--gold-deep);
+  }
+
+  footer.signature {
+    text-align: center;
+    padding: 20px;
+    font-size: 13px;
+    color: var(--muted);
+    font-family: 'Lora', serif;
+    font-style: italic;
+  }
+
+  /* iPad / smaller screens */
+  @media (max-width: 720px) {
+    main.story { padding: 28px 22px; margin: 20px 14px 40px; border-radius: 4px; }
+    .text-flow { font-size: 17px; line-height: 1.95; text-align: left; }
+    .player-wrap { width: 100%; max-width: 320px; }
+    .player-bar { padding: 12px 16px; gap: 14px; }
+    header.intro { padding: 32px 20px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="intro">
+  <p class="eyebrow">Fiaba sonora — esercizio di ascolto attivo</p>
+  <h1>Il <em>Cigno</em> Appiccica</h1>
+  <p class="subtitle">Ascolta la fiaba e completa le parole mancanti</p>
+  <div class="ornament">
+    <span class="line"></span>
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.4">
+      <path d="M12 2 L14 9 L21 10 L15.5 14.5 L17.5 21.5 L12 17.5 L6.5 21.5 L8.5 14.5 L3 10 L10 9 Z"/>
+    </svg>
+    <span class="line"></span>
+  </div>
+
+  <div class="instructions">
+    <strong>Come si fa.</strong> Premi <em>Play</em> sull'audio e segui il testo parola per parola. Quando senti la parola mancante, scrivila nel riquadro: se è giusta diventa verde. Se non hai capito bene, premi il pulsantino <span class="legend-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg></span> accanto al riquadro: l'audio ricomincia da cinque secondi prima.
+    <div class="legend">
+      <span class="legend-item"><span class="legend-icon" style="background:var(--gold-deep)"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M5 12h14"/></svg></span> parola da scrivere</span>
+      <span class="legend-item"><span class="legend-icon"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg></span> riascolta</span>
+      <span class="legend-item"><span class="legend-icon" style="background:var(--success)"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> risposta giusta</span>
+    </div>
+  </div>
+</header>
+
+<div class="player-bar">
+  <div class="player-wrap">
+    <div id="player"></div>
+  </div>
+  <div class="progress-block">
+    <div class="progress-label">
+      <span>Parole trovate</span>
+      <span class="count"><span id="found">0</span><span class="total"> / <span id="total">0</span></span></span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="fill"></div></div>
+    <div style="font-size:13px;color:var(--muted);margin-top:4px;font-style:italic;">
+      <span id="status">In attesa dell'audio…</span>
+    </div>
+  </div>
+</div>
+
+<main class="story">
+  <div class="text-flow" id="text-flow"></div>
+</main>
+
+<div class="banner" id="banner">
+  <h2>Hai completato la fiaba!</h2>
+  <p>Hai scritto correttamente <span class="score" id="banner-score">0</span> parole su <span id="banner-total">0</span></p>
+</div>
+
+<div class="actions">
+  <button class="action secondary" id="reveal-btn">Mostra le risposte</button>
+  <button class="action primary" id="reset-btn">Ricomincia</button>
+</div>
+
+<footer class="signature">Scuola Sacra Famiglia · Ascolto attivo — Fiabe Sonore</footer>
+
+<script>
+/* ============================================================
+   DATI: segmenti SRT con timing e parole mancanti tra [[ ... ]]
+   Il timing di ogni parola viene interpolato sulla durata del segmento.
+   ============================================================ */
+
+const VIDEO_ID = "CpRMyrCJuz4";
+
+const SEGMENTS = [
+  { s: 30.73, e: 34.67, t: "È fatto per sognar, per sognare," },
+  { s: 34.67, e: 38.33, t: "non serve l'ombrello e il cappottino [[rosso]], la" },
+  { s: 38.33, e: 42.01, t: "cartella, basta per venire con" },
+  { s: 42.01, e: 46.47, t: "me, basta un po' di [[fantasia]]" },
+  { s: 46.47, e: 47.53, t: "e via." },
+
+  { s: 68.66, e: 72.72, t: "Una volta un ragazzo molto buono e molto povero, si chiamava" },
+  { s: 72.72, e: 76.82, t: "[[Goffredo]]. Non aveva nemmeno un soldo per comprarsi un [[gelato]]" },
+  { s: 76.82, e: 80.84, t: "e per questo tutti i ragazzi del villaggio dove abitava lo pigliavano in giro." },
+  { s: 80.98, e: 84.58, t: "Avrei voluto vedere loro nei panni del [[povero]] Goffredo. I suoi" },
+  { s: 84.58, e: 88.14, t: "due fratelli lo costringevano ad andare ogni giorno a raccogliere [[legna]] nei" },
+  { s: 88.14, e: 91.76, t: "boschi, e guai se le fascine erano poche. Cari bambini," },
+  { s: 91.76, e: 95.36, t: "voi credete che sia divertente far legna? Niente affatto. Ci" },
+  { s: 95.36, e: 99.26, t: "si stanca molto e vengono certe bolle alle mani, vero Goffredo?" },
+  { s: 99.4,  e: 103.5, t: "Il bosco è molto bello e a primavera gli [[uccellini]] lo rallegrano." },
+  { s: 103.58, e: 107.44, t: "Ma per me, che ci vado tutti i giorni a faticare, non è divertente." },
+
+  { s: 111.81, e: 115.45, t: "Una mattina, in cui Goffredo era più sconsolato del solito, nel" },
+  { s: 115.45, e: 119.01, t: "bosco incontrò una [[vecchina]]. Povero Goffredo, nessuno" },
+  { s: 119.01, e: 122.83, t: "si prende cura di te, perché non te ne vai? E dove, buona" },
+  { s: 122.83, e: 126.35, t: "vecchina? Non ho neppure una [[bicicletta]]. Non importa" },
+  { s: 126.35, e: 129.91, t: "se non hai la bicicletta, puoi andare a piedi, piano piano." },
+  { s: 130.19, e: 133.95, t: "I tuoi [[zoccoli]] non sono certo veloci, ma ti porteranno in cerca" },
+  { s: 133.95, e: 135.23, t: "di [[fortuna]]." },
+
+  { s: 137.31, e: 140.93, t: "Goffredo stette un po' a pensare alle parole della vecchina, poi si caricò" },
+  { s: 140.93, e: 144.55, t: "sulle spalle e portò a casa la fascina che aveva raccolto. Sarebbe" },
+  { s: 144.55, e: 148.81, t: "stata l'ultima. Basta, sono deciso e persuaso," },
+  { s: 148.81, e: 152.97, t: "portare la fascina non voglio più. Da domani si cambia vita," },
+  { s: 152.97, e: 156.51, t: "voglio proprio farla finita. E me ne" },
+  { s: 156.51, e: 160.19, t: "vado dal paese domattina e ci faccio sopra anche" },
+  { s: 160.19, e: 164.27, t: "una [[fischiatina]]. Il mattino dopo infatti Goffredo" },
+  { s: 164.27, e: 167.99, t: "partì di buon passo. Si fermò un momento a guardare per l'ultima volta" },
+  { s: 167.99, e: 171.95, t: "il paesello dove aveva passato la sua [[fanciullezza]], e via. Per" },
+  { s: 171.95, e: 175.55, t: "dove? Ci avrebbe pensato più tardi, in quel momento non aveva le" },
+  { s: 175.55, e: 179.09, t: "idee chiare. Strada facendo incontrò la vecchina del giorno" },
+  { s: 179.09, e: 179.83, t: "precedente." },
+
+  { s: 185.04, e: 189.23, t: "Ciao! Già, proprio così. Hai fatto? Adesso" },
+  { s: 189.23, e: 192.83, t: "ti dirò io che cosa devi fare. Conosci il [[pero]], quello della filastrocca?" },
+  { s: 192.83, e: 196.65, t: "Il pero? Ah, quello… Pero, melo, dimmi il vero," },
+  { s: 196.65, e: 199.15, t: "non mi dire una bugia, bada bene che ci sia." },
+  { s: 202.39, e: 205.91, t: "La pianta? Vedrai che ai piedi del pero, melo dimmi il vero, ci sarà" },
+  { s: 205.91, e: 210.09, t: "un uomo che dorme, e accanto, legato all'albero, un bel [[cigno]]." },
+  { s: 210.09, e: 213.33, t: "Tu lascia dormire l'uomo, prendi il cigno e [[scappa]]." },
+  { s: 216.21, e: 217.57, t: "Qualcuno lo tocca e tu dici…" },
+  { s: 226.37, e: 229.93, t: "E vai verso la capitale del regno. La figlia" },
+  { s: 229.93, e: 233.47, t: "del re non ride da una decina di anni, tanto che i" },
+  { s: 233.47, e: 233.99, t: "cittadini…" },
+
+  { s: 238.27, e: 241.49, t: "Vedendo il corteo di persone appiccicate al tuo cigno, riderà." },
+  { s: 245.55, e: 248.07, t: "Per te, se riuscirai a far ridere la principessa. Un ultimo" },
+  { s: 258.97, e: 260.11, t: "regalo." },
+  { s: 260.11, e: 262.74, t: "Grazie, vecchina." },
+
+  { s: 262.74, e: 266.34, t: "Goffredo riprese il cammino e presto arrivò al pero. Zitto" },
+  { s: 266.34, e: 270.02, t: "zitto sciolse il cigno e se ne andò. Poco dopo passò" },
+  { s: 270.02, e: 273.88, t: "davanti a una casa in costruzione e un [[manovale]] volle accarezzare il cigno" },
+  { s: 273.88, e: 277.57, t: "che era molto bello." },
+  { s: 277.57, e: 281.19, t: "Bel cigno, posso fargli una carezza? Certo. Vieni" },
+  { s: 281.19, e: 285.25, t: "qui, cigno. Mio, mio, mio, mio. Cigno, appiccica." },
+  { s: 288.75, e: 292.61, t: "E il manovale, con la faccia ancora sporca di [[gesso]], restò" },
+  { s: 292.61, e: 293.47, t: "appiccicato." },
+
+  { s: 303.21, e: 307.17, t: "[[Caterina]], invece di star lì a ridere, prendimi per la mano e cerca di liberarmi!" },
+  { s: 307.35, e: 311.09, t: "La ragazza toccò la mano del manovale e anche lei restò appiccicata." },
+
+  { s: 315.88, e: 319.92, t: "Goffredo riprese la sua marcia mentre i due continuavano a contorcersi" },
+  { s: 319.92, e: 323.62, t: "nel tentativo di liberarsi. Abbiamo catturato un mano" },
+  { s: 323.62, e: 328.65, t: "vale, e Caterina solidamente appiccicati. Ed" },
+  { s: 328.65, e: 332.29, t: "ecco arrivare uno [[spazzacamino]], nero come il carbone." },
+  { s: 332.33, e: 335.77, t: "Appena vide quella buffa processione, cominciò a ridere." },
+  { s: 339.03, e: 341.35, t: "Caterina, giochi al [[trenino]]?" },
+
+  { s: 352.79, e: 356.41, t: "Lo spazzacamino venne catturato. Abbiamo catturato" },
+  { s: 356.41, e: 360.63, t: "un manovale, Caterina, uno spazzacamino," },
+  { s: 361.12, e: 362.86, t: "e il cigno appiccica, appiccica." },
+
+  { s: 365.25, e: 368.93, t: "Goffredo e il suo seguito arrivarono sulla piazza di un paese" },
+  { s: 368.93, e: 372.53, t: "dove si esibivano dei [[saltimbanchi]]. Un [[pagliaccio]], vedendo" },
+  { s: 372.53, e: 376.29, t: "la comitiva passare, si informò. Uè, uè, uè! Ma" },
+  { s: 376.29, e: 380.05, t: "che succede? Spazzacamino, dove vai? È Caterina" },
+  { s: 380.05, e: 383.61, t: "che mi tiene stretto e non mi lascia andare! Ma è questo manovale che mi tiene stretto" },
+  { s: 383.61, e: 387.13, t: "e non mi lascia andare!" },
+  { s: 387.13, e: 391.71, t: "Adesso vi libero io, ecco qua! Cigno, appiccica!" },
+
+  { s: 395.0,  e: 398.6,  t: "Catturato un manovale, Caterina, uno spazza" },
+  { s: 398.6,  e: 402.6,  t: "camino e un pagliaccio col panciotto a quadri, e" },
+  { s: 402.6,  e: 406.74, t: "adesso il cigno appiccica: chi cattura?" },
+
+  { s: 410.29, e: 413.92, t: "Tra la gente che assisteva divertita alla scena, c'era proprio in prima fila" },
+  { s: 413.92, e: 417.0,  t: "un [[funzionario]] di stato, grosso e rotondo come una palla." },
+  { s: 417.0,  e: 420.84, t: "Fermi tutti! Sono un funzionario di stato!" },
+  { s: 420.84, e: 424.14, t: "Qui c'è qualcosa che non funziona a dovere!" },
+  { s: 424.14, e: 425.99, t: "Vi consegnerò tutti alla polizia!" },
+
+  { s: 425.99, e: 429.72, t: "E afferrò la giubba del pagliaccio. Goffredo allora," },
+  { s: 429.72, e: 431.94, t: "pronto: cigno, appiccica!" },
+
+  { s: 435.07, e: 438.67, t: "La moglie del funzionario, una perticona lunga e secca come" },
+  { s: 438.67, e: 442.27, t: "una zitella inglese, si appese al braccio del grasso marito per" },
+  { s: 442.27, e: 444.67, t: "liberarlo, ma rimase appiccicata anche lei." },
+
+  { s: 460.56, e: 464.38, t: "Goffredo proseguì la sua strada alla testa di quella catena che sembrava formata" },
+  { s: 464.38, e: 467.54, t: "da un gruppo di matti, e giunse presto in vista della capitale." },
+
+  { s: 469.93, e: 473.65, t: "Ed ecco che sulla strada arriva una magnifica [[carrozza]]," },
+  { s: 473.65, e: 477.37, t: "dalla quale si affaccia una giovinetta molto graziosa, ma con un viso" },
+  { s: 477.37, e: 481.29, t: "tanto serio che vi è in voglia di mettersi a piangere a guardarlo. La fanciulla" },
+  { s: 481.29, e: 484.85, t: "era talmente triste che aveva fatto diventare tristi anche i servi" },
+  { s: 484.85, e: 488.52, t: "che l'accompagnavano. Quando la carrozza giunse all'altezza dello strano" },
+  { s: 488.52, e: 492.44, t: "corteo, la giovinetta, che era proprio la figlia del re, cominciò" },
+  { s: 492.44, e: 496.54, t: "a ridere, ma a ridere tanto che non la finiva più. La [[principessa]]" },
+  { s: 496.54, e: 500.36, t: "ride! Evviva! Ridiamo anche noi! Sì, ridiamo! Questa bella risata" },
+  { s: 500.36, e: 504.02, t: "ci voleva! Evviva, evviva! La principessa" },
+  { s: 504.02, e: 507.54, t: "scese dalla carrozza per poter ridere meglio e ogni volta" },
+  { s: 507.54, e: 511.16, t: "che guardava lo strano corteo e i buffi contorcimenti che tutti" },
+  { s: 511.16, e: 515.08, t: "facevano per liberarsi, scoppiava in una nuova risata. Alla" },
+  { s: 515.08, e: 516.679, t: "fine si rivolse a Goffredo." },
+
+  { s: 521.12, e: 526.1,  t: "Vieni con me, voglio che mio padre veda questo spettacolo, è divertentissimo!" },
+  { s: 526.26, e: 528.08, t: "Chi è, vostro padre?" },
+
+  { s: 534.76, e: 538.4,  t: "Quando furono arrivati alla reggia, il re prese a ridere" },
+  { s: 538.4,  e: 542.02, t: "a crepapelle di fronte allo strano corteo, tanto che, data la sua" },
+  { s: 542.02, e: 545.68, t: "età avanzata, il medico di corte cominciò a preoccuparsi per la sua" },
+  { s: 545.68, e: 549.64, t: "salute. Maestà, moderatevi, è pericoloso" },
+  { s: 549.64, e: 553.44, t: "ridere tanto in una volta sola, non ci siete abituato. Ma il re" },
+  { s: 553.44, e: 557.42, t: "non se ne dava per inteso, poi fra una risata e l'altra disse" },
+  { s: 557.42, e: 557.58, t: "a" },
+  { s: 557.58, e: 561.18, t: "Goffredo. Senti un" },
+  { s: 561.18, e: 564.88, t: "po', mattacchione, sai quale ricompensa ti spetta per" },
+  { s: 564.88, e: 568.61, t: "essere riuscito a far ridere mia figlia? Vediamo, un cavallo" },
+  { s: 568.61, e: 572.45, t: "bianco. No, mille fiorini o una bella tenuta, a scelta." },
+  { s: 572.61, e: 576.83, t: "Scelgo la [[tenuta]]. E adesso, maestà, preparatevi a fare un'altra bella" },
+  { s: 576.83, e: 580.47, t: "risata. Tocco con questa [[bacchetta]] magica la moglie secca" },
+  { s: 580.47, e: 584.88, t: "del funzionario." },
+  { s: 584.88, e: 588.58, t: "Il funzionario," },
+  { s: 588.58, e: 591.41, t: "il pagliaccio, lo spazzacamino," },
+  { s: 591.41, e: 594.42, t: "Caterina e il manovale." },
+
+  { s: 594.42, e: 598.02, t: "Liberato il manovale, Caterina, uno spazzacamino" },
+  { s: 598.02, e: 601.76, t: "e un pagliaccio col panciotto a quadri, un funzionario e la" },
+  { s: 601.76, e: 605.4,  t: "sua moglie secca. E adesso il cigno appiccica: chi catturerà?" },
+  { s: 606.1,  e: 610.16, t: "Proprio così, il cigno sta per catturare un'altra persona." },
+  { s: 610.86, e: 614.38, t: "La principessa, sorridendo, gli si accosta. Ecco" },
+  { s: 614.38, e: 618.3,  t: "che tende la mano, lo tocca: cigno, appiccica!" },
+
+  { s: 621.31, e: 624.89, t: "E la principessa resta prigioniera. Ma ecco che la" },
+  { s: 624.89, e: 626.67, t: "fanciulla ride, parla." },
+  { s: 629.27, e: 633.01, t: "Non mi dispiace di essere stata catturata dal cigno. Questo vuol" },
+  { s: 633.01, e: 636.99, t: "dire che desideri che io venga con te nella tua nuova tenuta. Bene" },
+  { s: 636.99, e: 640.85, t: "sia: chiederò al re mio padre il consenso per le [[nozze]]. Il" },
+  { s: 640.85, e: 645.13, t: "re sorrise e fece un cenno d'assenso. Allora Goffredo" },
+  { s: 645.13, e: 648.77, t: "disse con grande commozione. Grazie, principessa, accetto" },
+  { s: 648.77, e: 652.63, t: "di tutto cuore. Subito dopo le nozze partiremo" },
+  { s: 652.63, e: 656.19, t: "per il nostro castello e porteremo con noi la buona vecchina che" },
+  { s: 656.19, e: 659.75, t: "ha fatto la mia fortuna, e alla quale devo anche ridare la" },
+  { s: 659.75, e: 664.28, t: "bacchetta magica, non dimentichiamolo." },
+
+  { s: 664.28, e: 667.9,  t: "Finisce così questa favola breve, se ne" },
+  { s: 667.9,  e: 671.62, t: "va. Ma aspettate, e un'altra ne" },
+  { s: 671.62, e: 676.12, t: "avrete. C'era una volta, il cantafiabe dirà, e un'altra favola…" }
+];
+
+/* ============================================================
+   PARSER: estrae token e calcola timing parola per parola
+   ============================================================ */
+
+function parseSegments() {
+  const result = [];
+  let blankCounter = 0;
+
+  SEGMENTS.forEach((seg, segIdx) => {
+    const tokens = seg.t.split(/\s+/).filter(Boolean);
+    const dur = seg.e - seg.s;
+    const items = tokens.map((tok, i) => {
+      const m = tok.match(/^(.*?)\[\[([^\]]+)\]\](.*)$/);
+      const time = seg.s + ((i + 0.5) / tokens.length) * dur;
+      if (m) {
+        blankCounter++;
+        return {
+          type: 'blank',
+          prefix: m[1],
+          answer: m[2],
+          suffix: m[3],
+          time: time,
+          index: blankCounter,
+          tokenIndex: i
+        };
+      }
+      return { type: 'text', text: tok, time: time, tokenIndex: i };
+    });
+    result.push({ start: seg.s, end: seg.e, items, segIdx });
+  });
+
+  return { segs: result, totalBlanks: blankCounter };
+}
+
+const { segs: PARSED, totalBlanks: TOTAL } = parseSegments();
+
+/* ============================================================
+   RENDERING
+   ============================================================ */
+
+const flow = document.getElementById('text-flow');
+document.getElementById('total').textContent = TOTAL;
+document.getElementById('banner-total').textContent = TOTAL;
+
+const SVG_REPLAY = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>';
+const SVG_CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+
+function renderText() {
+  flow.innerHTML = '';
+  PARSED.forEach((seg) => {
+    const segSpan = document.createElement('span');
+    segSpan.className = 'seg';
+    segSpan.dataset.start = seg.start;
+    segSpan.dataset.end = seg.end;
+
+    seg.items.forEach((item, i) => {
+      if (item.type === 'text') {
+        segSpan.appendChild(document.createTextNode(item.text));
+      } else {
+        // prefix (rarely present)
+        if (item.prefix) segSpan.appendChild(document.createTextNode(item.prefix));
+
+        const wrap = document.createElement('span');
+        wrap.className = 'blank';
+        wrap.dataset.index = item.index;
+        wrap.dataset.answer = item.answer;
+        wrap.dataset.time = item.time;
+
+        const num = document.createElement('span');
+        num.className = 'blank-num';
+        num.textContent = item.index;
+        wrap.appendChild(num);
+
+        const inp = document.createElement('input');
+        inp.type = 'text';
+        inp.autocomplete = 'off';
+        inp.autocorrect = 'off';
+        inp.autocapitalize = 'off';
+        inp.spellcheck = false;
+        inp.setAttribute('aria-label', `Parola mancante numero ${item.index}`);
+        inp.style.setProperty('--w', Math.max(80, item.answer.length * 12 + 14) + 'px');
+        inp.placeholder = '_'.repeat(item.answer.length);
+        inp.addEventListener('input', () => onInput(wrap, inp));
+        wrap.appendChild(inp);
+
+        const btn = document.createElement('button');
+        btn.className = 'replay-btn';
+        btn.type = 'button';
+        btn.setAttribute('aria-label', `Riascolta cinque secondi prima della parola ${item.index}`);
+        btn.innerHTML = SVG_REPLAY;
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          replayFrom(item.time);
+        });
+        wrap.appendChild(btn);
+
+        // suffix (punctuation attached after [[...]])
+        if (item.suffix) {
+          const suf = document.createElement('span');
+          suf.textContent = item.suffix;
+          wrap.appendChild(suf);
+        }
+
+        segSpan.appendChild(wrap);
+      }
+
+      // add space between tokens within segment
+      if (i < seg.items.length - 1) {
+        segSpan.appendChild(document.createTextNode(' '));
+      }
+    });
+
+    flow.appendChild(segSpan);
+    // add a space between segments to keep flow natural
+    flow.appendChild(document.createTextNode(' '));
+  });
+}
+
+renderText();
+
+/* ============================================================
+   VALIDAZIONE
+   ============================================================ */
+
+function normalize(s) {
+  return s
+    .toString()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')      // remove diacritics
+    .toLowerCase()
+    .trim()
+    .replace(/[.,;:!?'"`’]/g, '')         // strip punctuation
+    .replace(/\s+/g, '');
+}
+
+let foundCount = 0;
+
+function onInput(wrap, inp) {
+  if (wrap.classList.contains('correct')) return;
+  const target = wrap.dataset.answer;
+  if (normalize(inp.value) === normalize(target)) {
+    wrap.classList.add('correct');
+    inp.value = target; // canonicalize display
+    inp.setAttribute('readonly', 'readonly');
+    inp.blur();
+    // checkmark
+    const check = document.createElement('span');
+    check.className = 'check-mark';
+    check.innerHTML = SVG_CHECK;
+    wrap.appendChild(check);
+    foundCount++;
+    updateProgress();
+    if (foundCount === TOTAL) showBanner();
+  }
+}
+
+function updateProgress() {
+  document.getElementById('found').textContent = foundCount;
+  const pct = (foundCount / TOTAL) * 100;
+  document.getElementById('fill').style.width = pct + '%';
+}
+
+function showBanner() {
+  const b = document.getElementById('banner');
+  document.getElementById('banner-score').textContent = foundCount;
+  b.classList.add('show');
+  b.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+/* ============================================================
+   YOUTUBE IFRAME API
+   ============================================================ */
+
+let player = null;
+let playerReady = false;
+
+const ytTag = document.createElement('script');
+ytTag.src = 'https://www.youtube.com/iframe_api';
+document.head.appendChild(ytTag);
+
+window.onYouTubeIframeAPIReady = function() {
+  player = new YT.Player('player', {
+    videoId: VIDEO_ID,
+    playerVars: {
+      rel: 0,
+      modestbranding: 1,
+      playsinline: 1,
+      enablejsapi: 1
+    },
+    events: {
+      onReady: () => {
+        playerReady = true;
+        document.getElementById('status').textContent = 'Premi Play e segui il testo.';
+      },
+      onStateChange: (e) => {
+        if (e.data === YT.PlayerState.PLAYING) {
+          document.getElementById('status').textContent = 'In ascolto…';
+          startHighlightLoop();
+        } else if (e.data === YT.PlayerState.PAUSED) {
+          document.getElementById('status').textContent = 'In pausa.';
+        } else if (e.data === YT.PlayerState.ENDED) {
+          document.getElementById('status').textContent = 'Audio terminato.';
+        }
+      }
+    }
+  });
+};
+
+function replayFrom(timeSec) {
+  if (!playerReady || !player) return;
+  const target = Math.max(0, timeSec - 5);
+  try {
+    player.seekTo(target, true);
+    player.playVideo();
+  } catch (err) {
+    console.warn('Errore seek:', err);
+  }
+}
+
+/* ============================================================
+   HIGHLIGHT SEGMENTO ATTIVO durante la riproduzione
+   ============================================================ */
+
+let highlightInterval = null;
+let lastActive = null;
+
+function startHighlightLoop() {
+  if (highlightInterval) return;
+  highlightInterval = setInterval(() => {
+    if (!playerReady || !player) return;
+    let now;
+    try { now = player.getCurrentTime(); } catch { return; }
+    const active = PARSED.find(s => now >= s.start && now < s.end);
+    if (active && active !== lastActive) {
+      if (lastActive) {
+        const prev = flow.querySelector(`.seg[data-start="${lastActive.start}"]`);
+        if (prev) prev.classList.remove('active');
+      }
+      const node = flow.querySelector(`.seg[data-start="${active.start}"]`);
+      if (node) {
+        node.classList.add('active');
+        // gentle auto-scroll only if active segment is offscreen
+        const rect = node.getBoundingClientRect();
+        if (rect.top < 200 || rect.bottom > window.innerHeight - 80) {
+          node.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }
+      lastActive = active;
+    }
+  }, 250);
+}
+
+/* ============================================================
+   PULSANTI AZIONI
+   ============================================================ */
+
+document.getElementById('reveal-btn').addEventListener('click', () => {
+  document.querySelectorAll('.blank').forEach(wrap => {
+    if (wrap.classList.contains('correct')) {
+      wrap.classList.add('revealed-right');
+      return;
+    }
+    const inp = wrap.querySelector('input');
+    inp.value = wrap.dataset.answer;
+    inp.setAttribute('readonly', 'readonly');
+    wrap.classList.add('revealed-missed');
+  });
+  document.getElementById('banner-score').textContent = foundCount;
+  document.getElementById('banner').classList.add('show');
+});
+
+document.getElementById('reset-btn').addEventListener('click', () => {
+  if (!confirm('Vuoi ricominciare? Tutte le parole inserite verranno cancellate.')) return;
+  foundCount = 0;
+  updateProgress();
+  document.getElementById('banner').classList.remove('show');
+  document.querySelectorAll('.blank').forEach(wrap => {
+    wrap.classList.remove('correct', 'revealed-right', 'revealed-missed');
+    const inp = wrap.querySelector('input');
+    inp.value = '';
+    inp.removeAttribute('readonly');
+    const check = wrap.querySelector('.check-mark');
+    if (check) check.remove();
+  });
+  if (player && playerReady) {
+    try { player.seekTo(0, true); player.pauseVideo(); } catch {}
+  }
+});
+</script>
+
+</body>
+</html>
